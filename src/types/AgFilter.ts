@@ -1,4 +1,4 @@
-import { Comparison, Matcher, Operator } from '@/component/types'
+import { Comparison, Matcher, Operator } from 'multi-source-select'
 
 export type AgFilterType = 'date' | 'text' | 'number'
 export type AgOperator = 'AND' | 'OR'

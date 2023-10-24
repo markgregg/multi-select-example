@@ -1,21 +1,22 @@
 {
-  "name": "mutli-select-example",
-  "version": "1.0.0",
-  "description": "Muti-source select control",
+  "name": "mutli-source-select-example",
+  "version": "1.0.1",
+  "description": "Multi source select control",
   "author": "Mark Gregg <gregg.mark@gmail.com> (https://github.com/markgregg)",
   "license": "MIT",
+  "homepage": "https://markgregg.github.io/multi-select-example/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier . --write --ignore-path .gitignore && git update-index --again"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "format": "prettier . --write --ignore-path .gitignore && git update-index --again",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "ag-grid-community": "30.2.0",
     "ag-grid-react": "30.2.0",
     "multi-source-select": "1.1.1",
