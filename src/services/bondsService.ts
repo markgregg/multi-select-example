@@ -1,4 +1,4 @@
-import Bond from "@/types/Bond"
+import Bond from "../types/Bond"
 
 let bondCache: Bond[] = []
 export const fetchBondsAndCache = (): Promise<Bond[]> => {

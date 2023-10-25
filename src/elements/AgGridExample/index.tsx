@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Theme, getAgGridStyle, styleFromTheme } from "@/themes"
+import { Theme, getAgGridStyle, styleFromTheme } from "../../themes"
 import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons } from 'multi-source-select'
 import MultiSelect from 'multi-source-select'
 import { AgGridReact } from "ag-grid-react";
-import { fetchBondsAndCache } from '@/services/bondsService';
-import Bond from '@/types/Bond';
+import { fetchBondsAndCache } from '../../services/bondsService';
+import Bond from '../../types/Bond';
 import { ColDef, IRowNode } from 'ag-grid-community';
-import { createFilter } from '@/types/AgFilter';
+import { createFilter } from '../../types/AgFilter';
 import './AgGridExample.css'
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";

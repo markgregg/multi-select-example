@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Theme, styleCodeFromTheme, styleFromTheme } from "@/themes"
+import { Theme, styleCodeFromTheme, styleFromTheme } from "../../themes"
 import { DataSource, Matcher, defaultComparison, numberComparisons, stringComparisons } from 'multi-source-select'
+import Help from '../Help'
 import MultiSelect from 'multi-source-select'
 import './BasicExample.css'
-import Help from '../Help'
 
 interface BasicExampleProps {
   theme: Theme

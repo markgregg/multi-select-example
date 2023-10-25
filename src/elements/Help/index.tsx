@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { TbHelpSquareRoundedFilled } from 'react-icons/tb'
+import useExternalClicks from '../../hooks/useExternalClicks/useExternalClicks'
+import { Theme, bodyStyleFromTheme } from '../../themes'
 import './Help.css'
-import useExternalClicks from '@/hooks/useExternalClicks/useExternalClicks'
-import { Theme, bodyStyleFromTheme } from '@/themes'
 
 interface HelpProps {
   theme: Theme
