@@ -4,8 +4,9 @@ import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 
 export default defineConfig({
-  base: "multi-select-example",
-  root: path.resolve(__dirname, './src'),
+  server: {
+    port: 3000,
+  },
   plugins: [
     react(),
     eslintPlugin(),
