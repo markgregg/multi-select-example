@@ -5,7 +5,6 @@ import path from 'path'
 
 export default defineConfig({
   base: "multi-select-example",
-  root: "./",
   plugins: [
     react(),
     eslintPlugin(),
