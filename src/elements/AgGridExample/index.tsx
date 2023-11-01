@@ -53,7 +53,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
   ]);
   const [filterSources, setFilterSources] = React.useState<string[]>([])
 
-  const findItems = React.useCallback((text: string, field: 'isin' | 'currency'): SourceItem[] => {
+  const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer'): SourceItem[] => {
     const uniqueItems = new Set<string>()
     const callback = (row: IRowNode<Bond>) => {
       if (row.data) {
@@ -133,6 +133,23 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
       selectionLimit: 2,
       match: /^[a-zA-Z]{2,}$/,
       value: (text: string) => text,
+    },
+    {
+      name: 'Issuer2',
+      title: 'Issuer',
+      comparisons: defaultComparison,
+      precedence: 1,
+      ignoreCase: false,
+      searchStartLength: 3,
+      selectionLimit: 2,
+      source: async (text) => new Promise((resolve) => {
+        setTimeout(
+          () =>
+            resolve(findItems(text, 'issuer')
+            ),
+          5,
+        )
+      })
     },
     {
       name: 'MaturityDate',

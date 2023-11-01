@@ -84,7 +84,7 @@ const Help: React.FC<HelpProps> = ({ theme }) => {
               PageDown - move to previous data source group in the option list<br />
               Home - move to first data source group in the option list<br />
               End - move to last data source group in the option list<br />
-              Enter - select current option<br />
+              Enter - select current option / enter selection<br />
               Tab - select current option<br />
             </div>
           }
