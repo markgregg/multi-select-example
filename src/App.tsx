@@ -1,19 +1,53 @@
 import * as React from 'react'
-import './App.css'
 import Select from './elements/Select'
 import { Theme, bodyStyleFromTheme, themes } from './themes'
-import BasicExample from './elements/BasicExample'
+import CommandBar from './elements/CommandBar'
+import { useAppDispatch, useAppSelector } from './hooks/redxux'
+import { setTheme } from './store/themeSlice'
 import AgGridExample from './elements/AgGridExample'
+import Window from './elements/Window'
+import Button from './elements/Button'
+import { LuGrid } from 'react-icons/lu';
+import './App.css'
+import TradeExample from './elements/TradeExample'
+import { Matcher } from 'multi-source-select'
+import Trade, { defaultTrade } from './types/Trade'
 
-type Example = 'basic' | 'ag-grid'
-const examples: Example[] = [
-  'basic',
-  'ag-grid'
-]
+
 
 const App = () => {
-  const [theme, setTheme] = React.useState<Theme>(themes[0])
-  const [example, setExample] = React.useState<Example>(examples[0])
+  const [blotterVisible, setBlotterVisible] = React.useState<boolean>(true)
+  const [tradeEntryVisible, setTradeEntryVisible] = React.useState<boolean>(false)
+  const [trade, setTrade] = React.useState<Trade>(defaultTrade)
+  const theme = useAppSelector((state) => state.theme.theme)
+  const dispatch = useAppDispatch()
+
+  const updateTheme = (theme: Theme) => {
+    dispatch(setTheme(theme))
+  }
+
+  React.useEffect(() => {
+    window.open('', '_blank')?.focus()
+  }, [])
+
+  const enterTrade = (matchers: Matcher[]) => {
+    const isin = matchers.find(m => m.source === 'ISIN')?.text ?? 'XS2567260927'
+    const tradeDate = matchers.find(m => m.source === 'TradeDate')?.value as Date ?? new Date()
+    const price = matchers.find(m => m.source === 'Price')?.value as number ?? 99.99
+    const size = matchers.find(m => m.source === 'Size')?.value as number ?? 1000000
+    const side = matchers.find(m => m.source === 'Side')?.value as ('BUY' | 'SELL') ?? 'BUY'
+    const client = matchers.find(m => m.source === 'Client')?.text ?? 'Landesbank Saar'
+
+    setTrade({
+      isin,
+      tradeDate,
+      price,
+      size,
+      side,
+      client
+    })
+    setTradeEntryVisible(true)
+  }
 
   return (
     <div
@@ -26,22 +60,35 @@ const App = () => {
         <Select
           options={themes}
           selection={theme}
-          onSelectOption={setTheme}
+          onSelectOption={updateTheme}
         />
       </div>
-      <div className='mainSelection'>
-        <b>Exaples</b>
-        <Select
-          options={examples}
-          selection={example}
-          onSelectOption={setExample}
-        />
+      <div className='mainToolBar'>
+        <Button Icon={LuGrid} onClick={() => setBlotterVisible(true)} />
       </div>
-      {
-        example === 'basic'
-          ? <BasicExample theme={theme} />
-          : <AgGridExample theme={theme} />
-      }
+      <CommandBar onTrade={enterTrade} />
+      <Window
+        title='Position Blotter'
+        visible={blotterVisible}
+        onHide={() => setBlotterVisible(false)}
+        height={500}
+        width={1200}
+        x={50}
+        y={200}
+      >
+        <AgGridExample />
+      </Window>
+      <Window
+        title='Trade entry'
+        visible={tradeEntryVisible}
+        onHide={() => setTradeEntryVisible(false)}
+        height={300}
+        width={350}
+        x={200}
+        y={300}
+      >
+        <TradeExample trade={trade} onClose={() => setTradeEntryVisible(false)} />
+      </Window>
     </div>
   )
 }

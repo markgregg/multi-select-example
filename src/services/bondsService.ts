@@ -6,7 +6,7 @@ export const fetchBondsAndCache = (): Promise<Bond[]> => {
     new Promise<Bond[]>(resolve => resolve(bondCache))
   }
 
-  return getData<Bond[]>('http://localhost:8080/api/bonds')
+  return getData<Bond[]>('./bonds.json')
     .then(bonds => {
       bondCache = bonds
       return bonds

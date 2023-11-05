@@ -38,6 +38,7 @@ const getFilterType = (source: string): AgFilterType => {
     case 'ISIN':
     case 'Currency':
     case 'Issuer':
+    case 'Side':
       return 'text'
     case 'MaturityDate':
     case 'IssueDate':

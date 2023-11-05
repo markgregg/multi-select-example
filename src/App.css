@@ -24,3 +24,9 @@
   column-gap: 10px;
   margin-bottom: 20px;
 }
+
+.mainToolBar {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+}

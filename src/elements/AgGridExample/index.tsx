@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Theme, getAgGridStyle, styleFromTheme } from "../../themes"
+import { getAgGridStyle, styleFromTheme } from "../../themes"
 import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons } from 'multi-source-select'
 import MultiSelect from 'multi-source-select'
 import { AgGridReact } from "ag-grid-react";
@@ -7,38 +7,14 @@ import { fetchBondsAndCache } from '../../services/bondsService';
 import Bond from '../../types/Bond';
 import { ColDef, IRowNode } from 'ag-grid-community';
 import { createFilter } from '../../types/AgFilter';
+import { useAppDispatch, useAppSelector } from '../../hooks/redxux';
+import { extractDate, getSize, isSize, isUnique } from '../../utils';
+import { setContext } from '../../store/contextSlice';
 import './AgGridExample.css'
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-
-interface AgGridExampleProps {
-  theme: Theme
-}
-
-const isUnique = (value: string, index: number, array: string[]) => {
-  return array.indexOf(value) === index;
-}
-
-const formatDate = (date: Date): string => date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-
-const extractDate = (text: string) => {
-  const dt = new Date()
-  const value = parseInt(text.substring(0, text.length - 1))
-  const postFix = text.substring(text.length - 1)
-  if (postFix === 'y' || postFix === 'Y') {
-    dt.setFullYear(dt.getFullYear() + value)
-    return formatDate(dt)
-  } else {
-    const addYears = (value + dt.getMonth()) / 12
-    const months = (value + dt.getMonth()) % 12
-    dt.setFullYear(dt.getFullYear() + addYears)
-    dt.setMonth(months)
-    return formatDate(dt)
-  }
-}
-
-const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
+const AgGridExample = () => {
   const agGridRef = React.useRef<AgGridReact<Bond> | null>(null)
   const [matchers, setMatchers] = React.useState<Matcher[]>()
   const [rowData, setRowData] = React.useState<Bond[]>();
@@ -48,10 +24,23 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
     { field: "issueDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
     { field: "maturityDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
     { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
+    { field: "price", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
+    { field: "size", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
+    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true },
     { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true },
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
   ]);
   const [filterSources, setFilterSources] = React.useState<string[]>([])
+
+  const dispatch = useAppDispatch()
+  const theme = useAppSelector((state) => state.theme.theme)
+  const context = useAppSelector((state) => state.context)
+
+  React.useEffect(() => {
+    if (context.matchers.length > 0) {
+      matchersChanged(context.matchers)
+    }
+  }, [context])
 
   const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer'): SourceItem[] => {
     const uniqueItems = new Set<string>()
@@ -123,6 +112,35 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
       selectionLimit: 2,
       match: (text: string) => !isNaN(Number(text)),
       value: (text: string) => Number.parseFloat(text),
+    },
+    {
+      name: 'Price',
+      title: 'Price',
+      comparisons: numberComparisons,
+      searchStartLength: 1,
+      precedence: 1,
+      selectionLimit: 2,
+      match: (text: string) => !isNaN(Number(text)),
+      value: (text: string) => Number.parseFloat(text),
+    },
+    {
+      name: 'Size',
+      title: 'Size',
+      comparisons: numberComparisons,
+      precedence: 4,
+      searchStartLength: 1,
+      selectionLimit: 2,
+      match: (text: string) => isSize(text),
+      value: (text: string) => getSize(text),
+    },
+    {
+      name: 'Side',
+      title: 'Side',
+      comparisons: stringComparisons,
+      precedence: 4,
+      ignoreCase: true,
+      selectionLimit: 2,
+      source: ['BUY', 'SELL']
     },
     {
       name: 'Issuer',
@@ -229,7 +247,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
         <MultiSelect
           matchers={matchers}
           dataSources={dataSource}
-          onMatchersChanged={matchersChanged}
+          onMatchersChanged={m => dispatch(setContext(m))}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
         />
@@ -246,6 +264,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({ theme }) => {
         </AgGridReact>
       </div>
     </div>
+
   )
 }
 
