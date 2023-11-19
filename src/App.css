@@ -21,8 +21,19 @@
 .mainSelection {
   display: flex;
   flex-direction: row;
+  column-gap: 20px;
+}
+
+.mainTheme {
+  display: flex;
+  flex-direction: row;
   column-gap: 10px;
-  margin-bottom: 20px;
+}
+
+.mainOptions {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
 }
 
 .mainToolBar {

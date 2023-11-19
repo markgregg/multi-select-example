@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { fetchBondsAndCache } from '../../services/bondsService';
 import Bond from '../../types/Bond';
 import { ColDef, IRowNode } from 'ag-grid-community';
-import { createFilter } from '../../types/AgFilter';
+import { createFilter, getColumn } from '../../types/AgFilter';
 import { useAppDispatch, useAppSelector } from '../../hooks/redxux';
 import { extractDate, getSize, isSize, isUnique } from '../../utils';
 import { setContext } from '../../store/contextSlice';
@@ -14,7 +14,16 @@ import './AgGridExample.css'
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-const AgGridExample = () => {
+interface AgGridExampleProps {
+  showCategories?: boolean
+  hideToolTips?: boolean
+}
+
+
+const AgGridExample: React.FC<AgGridExampleProps> = ({
+  showCategories,
+  hideToolTips
+}) => {
   const agGridRef = React.useRef<AgGridReact<Bond> | null>(null)
   const [matchers, setMatchers] = React.useState<Matcher[]>()
   const [rowData, setRowData] = React.useState<Bond[]>();
@@ -30,17 +39,9 @@ const AgGridExample = () => {
     { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true },
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
   ]);
-  const [filterSources, setFilterSources] = React.useState<string[]>([])
-
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.theme.theme)
   const context = useAppSelector((state) => state.context)
-
-  React.useEffect(() => {
-    if (context.matchers.length > 0) {
-      matchersChanged(context.matchers)
-    }
-  }, [context])
 
   const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer'): SourceItem[] => {
     const uniqueItems = new Set<string>()
@@ -149,7 +150,7 @@ const AgGridExample = () => {
       precedence: 1,
       ignoreCase: true,
       selectionLimit: 2,
-      match: /^[a-zA-Z]{2,}$/,
+      match: /^[a-zA-Z ]{2,}$/,
       value: (text: string) => text,
     },
     {
@@ -191,6 +192,34 @@ const AgGridExample = () => {
     [findItems]
   )
 
+  const matchersChanged = React.useCallback((newMatchers: Matcher[]) => {
+    const sources = newMatchers.map(m => m.source).filter(isUnique)
+    sources.forEach(source => {
+      const column = getColumn(source)
+      const values = newMatchers.filter(m => m.source === source)
+      const filter = createFilter(values)
+      const instance = agGridRef.current?.api?.getFilterInstance(column)
+      if (instance) {
+        instance?.setModel(filter)
+      }
+    })
+    columnDefs.map(source => source.field).filter(field => field && !sources.find(src => src.toLowerCase() === field))
+      .forEach(field => {
+        if (field) {
+          const instance = agGridRef.current?.api?.getFilterInstance(field)
+          if (instance) {
+            instance?.setModel(null)
+          }
+        }
+      })
+    agGridRef.current?.api?.onFilterChanged()
+    setMatchers(newMatchers)
+  }, [columnDefs])
+
+  React.useEffect(() => {
+    matchersChanged(context.matchers)
+  }, [context, matchersChanged])
+
   React.useEffect(() => {
     fetchBondsAndCache()
       .then(setRowData)
@@ -206,40 +235,7 @@ const AgGridExample = () => {
       })
   }, [])
 
-  const getColumn = (source: string): string => {
-    switch (source) {
-      case 'MaturityDate':
-        return 'maturityDate';
-      case 'IssueDate':
-        return 'issueDate';
-      case 'HairCut':
-        return 'hairCut';
-    }
-    return source.toLowerCase()
-  }
 
-  const matchersChanged = (newMatchers: Matcher[]) => {
-    const sources = newMatchers.map(m => m.source).filter(isUnique)
-    sources.forEach(source => {
-      const column = getColumn(source)
-      const values = newMatchers.filter(m => m.source === source)
-      const filter = createFilter(values)
-      const instance = agGridRef.current?.api.getFilterInstance(column)
-      if (instance) {
-        instance?.setModel(filter)
-      }
-    })
-    filterSources.filter(source => !sources.includes(source))
-      .forEach(source => {
-        const instance = agGridRef.current?.api.getFilterInstance(getColumn(source))
-        if (instance) {
-          instance?.setModel(null)
-        }
-      })
-    agGridRef.current?.api.onFilterChanged()
-    setFilterSources(sources)
-    setMatchers(newMatchers)
-  }
 
   return (
     <div>
@@ -250,6 +246,8 @@ const AgGridExample = () => {
           onMatchersChanged={m => dispatch(setContext(m))}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
+          showCategories={showCategories}
+          hideToolTip={hideToolTips}
         />
       </div>
       <div

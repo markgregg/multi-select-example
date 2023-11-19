@@ -1,18 +1,11 @@
 import * as React from 'react'
 import { Rnd } from 'react-rnd';
 import { AiOutlineClose } from 'react-icons/ai';
-import './Window.css'
 import Button from '../Button';
+import { useAppSelector } from '../../hooks/redxux';
+import { styleHeaderFromTheme } from '../../themes';
+import './Window.css'
 
-interface Size {
-  height: number
-  width: number
-}
-
-interface Position {
-  x: number
-  y: number
-}
 
 type WindowProps = {
   children?: React.ReactNode
@@ -28,6 +21,7 @@ type WindowProps = {
 const Window: React.FC<WindowProps> = ({
   children, title, visible, onHide, height, width, x, y
 }) => {
+  const theme = useAppSelector((state) => state.theme.theme)
 
   return (
     <Rnd
@@ -38,7 +32,10 @@ const Window: React.FC<WindowProps> = ({
     >
       {
         visible && <div className='windowMain'>
-          <div className='windowToolBar'>
+          <div
+            className='windowToolBar'
+            style={styleHeaderFromTheme(theme)}
+          >
             <Button
               Icon={AiOutlineClose}
               onClick={onHide}

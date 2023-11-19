@@ -4,7 +4,7 @@
   "description": "Multi source select control",
   "author": "Mark Gregg <gregg.mark@gmail.com> (https://github.com/markgregg)",
   "license": "MIT",
-  "homepage": "https://markgregg.github.io/multi-select-example/",
+  "homepage": "npm ",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -18,7 +18,7 @@
     "@reduxjs/toolkit": "1.9.7",
     "ag-grid-community": "30.2.0",
     "ag-grid-react": "30.2.0",
-    "multi-source-select": "1.4.0",
+    "multi-source-select": "1.6.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "4.11.0",

@@ -13,9 +13,9 @@ import TradeExample from './elements/TradeExample'
 import { Matcher } from 'multi-source-select'
 import Trade, { defaultTrade } from './types/Trade'
 
-
-
 const App = () => {
+  const [showCategories, setShowCategories] = React.useState<boolean>(false)
+  const [hideToolTips, setHideToolTips] = React.useState<boolean>(false)
   const [blotterVisible, setBlotterVisible] = React.useState<boolean>(true)
   const [tradeEntryVisible, setTradeEntryVisible] = React.useState<boolean>(false)
   const [trade, setTrade] = React.useState<Trade>(defaultTrade)
@@ -25,10 +25,6 @@ const App = () => {
   const updateTheme = (theme: Theme) => {
     dispatch(setTheme(theme))
   }
-
-  React.useEffect(() => {
-    window.open('', '_blank')?.focus()
-  }, [])
 
   const enterTrade = (matchers: Matcher[]) => {
     const isin = matchers.find(m => m.source === 'ISIN')?.text ?? 'XS2567260927'
@@ -56,17 +52,35 @@ const App = () => {
     >
       <h2>MutliSelect</h2>
       <div className='mainSelection'>
-        <b>Themes</b>
-        <Select
-          options={themes}
-          selection={theme}
-          onSelectOption={updateTheme}
-        />
+        <div className='mainTheme'>
+          <b>Themes</b>
+          <Select
+            options={themes}
+            selection={theme}
+            onSelectOption={updateTheme}
+          />
+        </div>
+        <div className='mainOptions'>
+          <label>Show Categories
+            <input
+              type="checkbox"
+              checked={showCategories}
+              onChange={e => setShowCategories(e.currentTarget.checked)}
+            />
+          </label>
+          <label>Hide Tooltips
+            <input
+              type="checkbox"
+              checked={hideToolTips}
+              onChange={e => setHideToolTips(e.currentTarget.checked)}
+            />
+          </label>
+        </div>
       </div>
       <div className='mainToolBar'>
         <Button Icon={LuGrid} onClick={() => setBlotterVisible(true)} />
       </div>
-      <CommandBar onTrade={enterTrade} />
+      <CommandBar onTrade={enterTrade} showCategories={showCategories} hideToolTips={hideToolTips} />
       <Window
         title='Position Blotter'
         visible={blotterVisible}
@@ -74,9 +88,9 @@ const App = () => {
         height={500}
         width={1200}
         x={50}
-        y={200}
+        y={220}
       >
-        <AgGridExample />
+        <AgGridExample showCategories={showCategories} hideToolTips={hideToolTips} />
       </Window>
       <Window
         title='Trade entry'

@@ -1,7 +1,8 @@
 import Trade from '@/types/Trade'
 import * as React from 'react'
+import { useAppSelector } from '../../hooks/redxux'
+import { styleDivFromTheme } from '../../themes'
 import './TradeExample.css'
-import Button from '../Button'
 
 interface TradeExampleProps {
   trade: Trade
@@ -9,9 +10,13 @@ interface TradeExampleProps {
 }
 
 const TradeExample: React.FC<TradeExampleProps> = ({ trade, onClose }) => {
+  const theme = useAppSelector((state) => state.theme.theme)
 
   return (
-    <div className='tradeMain'>
+    <div
+      className='tradeMain'
+      style={styleDivFromTheme(theme)}
+    >
       <div
         className='tradeBuySell'
         style={{ backgroundColor: trade.side === 'BUY' ? 'blue' : 'red' }}

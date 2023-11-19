@@ -33,11 +33,26 @@ export interface AgDualFilter {
 
 type AgFilter = AgSingleFilter | AgDualFilter
 
-const getFilterType = (source: string): AgFilterType => {
+export const getColumn = (source: string): string => {
+  switch (source) {
+    case 'MaturityDate':
+      return 'maturityDate';
+    case 'IssueDate':
+      return 'issueDate';
+    case 'HairCut':
+      return 'hairCut';
+    case 'Issuer2':
+      return 'issuer'
+  }
+  return source.toLowerCase()
+}
+
+export const getFilterType = (source: string): AgFilterType => {
   switch (source) {
     case 'ISIN':
     case 'Currency':
     case 'Issuer':
+    case 'Issuer2':
     case 'Side':
       return 'text'
     case 'MaturityDate':
@@ -52,17 +67,17 @@ const getTextComparisonType = (comparison: string):
   'equals' | 'notEqual' | 'contains' | 'notContains' | 'startsWith' | 'endsWith' => {
   switch (comparison) {
     case '!':
-      return 'notEqual';
+      return 'notEqual'
     case '*':
-      return 'contains';
+      return 'contains'
     case '!*':
-      return 'notContains';
+      return 'notContains'
     case '>*':
-      return 'startsWith';
+      return 'startsWith'
     case '<*':
-      return 'endsWith';
+      return 'endsWith'
     default:
-      return 'equals';
+      return 'equals'
   }
 }
 
@@ -70,17 +85,17 @@ const getDateNumberComparisonType = (comparison: string):
   'equals' | 'notEqual' | 'greaterThan' | 'lessThan' | 'greaterThanOrEqual' | 'lessThanOrEqual' => {
   switch (comparison) {
     case '!':
-      return 'notEqual';
+      return 'notEqual'
     case '>':
-      return 'greaterThan';
+      return 'greaterThan'
     case '<':
-      return 'lessThan';
+      return 'lessThan'
     case '>=':
-      return 'greaterThanOrEqual';
+      return 'greaterThanOrEqual'
     case '<=':
-      return 'lessThanOrEqual';
+      return 'lessThanOrEqual'
     default:
-      return 'equals';
+      return 'equals'
   }
 }
 

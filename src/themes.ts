@@ -130,3 +130,23 @@ export const getAgGridStyle = (theme: string): any => {
   }
   return {}
 }
+
+export const styleDivFromTheme = (theme: string): any => {
+  if (theme === 'metallic') {
+    return {
+      background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
+      color: 'white'
+    }
+  }
+  return {}
+}
+
+export const styleHeaderFromTheme = (theme: string): any => {
+  if (theme === 'metallic') {
+    return {
+      backgroundColor: '#00468C',
+      color: 'white'
+    }
+  }
+  return {}
+}
