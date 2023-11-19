@@ -28,8 +28,8 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
   const [matchers, setMatchers] = React.useState<Matcher[]>()
   const [rowData, setRowData] = React.useState<Bond[]>();
   const [columnDefs] = React.useState<ColDef<Bond>[]>([
-    { field: "isin", filter: 'agSetColumnFilter', sortable: true, resizable: true },
-    { field: "currency", filter: 'agSetColumnFilter', sortable: true, resizable: true },
+    { field: "isin", filter: 'agTextColumnFilter', sortable: true, resizable: true },
+    { field: "currency", filter: 'agTextColumnFilter', sortable: true, resizable: true },
     { field: "issueDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
     { field: "maturityDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
     { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
@@ -203,7 +203,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
         instance?.setModel(filter)
       }
     })
-    columnDefs.map(source => source.field).filter(field => field && !sources.find(src => src.toLowerCase() === field))
+    columnDefs.map(source => source.field).filter(field => field && !sources.find(src => getColumn(src) === field))
       .forEach(field => {
         if (field) {
           const instance = agGridRef.current?.api?.getFilterInstance(field)
@@ -258,7 +258,6 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
           ref={agGridRef}
           rowData={rowData}
           columnDefs={columnDefs}>
-          enableAdvancedFilter={true}
         </AgGridReact>
       </div>
     </div>

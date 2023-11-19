@@ -9,7 +9,7 @@ export const fetchBondsAndCache = (): Promise<Bond[]> => {
   return getData<Bond[]>('./bonds.json')
     .then(bonds => {
       bondCache = bonds
-      return bonds
+      return bondCache
     })
 }
 
