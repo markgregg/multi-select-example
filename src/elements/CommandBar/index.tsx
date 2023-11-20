@@ -1,13 +1,12 @@
 import * as React from 'react'
 import { styleCodeFromTheme, styleFromTheme } from "../../themes"
-import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons } from 'multi-source-select'
+import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons, Nemonic } from 'multi-source-select'
 import MultiSelect from 'multi-source-select'
 import { useAppDispatch, useAppSelector } from '../../hooks/redxux'
 import { extractDate, getSize, isSize } from '../../utils'
 import { fetchBondsAndCache } from '../../services/bondsService'
 import Bond from '../../types/Bond'
 import { setContext } from '../../store/contextSlice'
-import Nemonic from 'multi-source-select/dist/types/Nemonic'
 import { getColumn, getFilterType } from '../../types/AgFilter'
 import './CommandBar.css'
 
