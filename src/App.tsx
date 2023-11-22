@@ -85,7 +85,7 @@ const App = () => {
         title='Position Blotter'
         visible={blotterVisible}
         onHide={() => setBlotterVisible(false)}
-        height={500}
+        height={460}
         width={1200}
         x={50}
         y={220}

@@ -43,7 +43,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
   const theme = useAppSelector((state) => state.theme.theme)
   const context = useAppSelector((state) => state.context)
 
-  const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer'): SourceItem[] => {
+  const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer', op: 'and' | 'or' | null): SourceItem[] => {
     const uniqueItems = new Set<string>()
     const callback = (row: IRowNode<Bond>) => {
       if (row.data) {
@@ -54,7 +54,11 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
         }
       }
     }
-    agGridRef.current?.api.forEachNodeAfterFilter(callback);
+    if (op === 'or') {
+      agGridRef.current?.api.forEachLeafNode(callback);
+    } else {
+      agGridRef.current?.api.forEachNodeAfterFilter(callback);
+    }
     let items = [...uniqueItems].sort();
     if (items.length > 10) {
       items = items?.slice(10)
@@ -71,10 +75,10 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
       ignoreCase: true,
       searchStartLength: 1,
       selectionLimit: 2,
-      source: async (text) => new Promise((resolve) => {
+      source: async (text, op) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'isin')
+            resolve(findItems(text, 'isin', op)
             ),
           5,
         )
@@ -87,10 +91,10 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
       precedence: 2,
       ignoreCase: true,
       selectionLimit: 2,
-      source: async (text) => new Promise((resolve) => {
+      source: async (text, op) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'currency')
+            resolve(findItems(text, 'currency', op)
             ),
           5,
         )
@@ -161,10 +165,10 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
       ignoreCase: false,
       searchStartLength: 3,
       selectionLimit: 2,
-      source: async (text) => new Promise((resolve) => {
+      source: async (text, op) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'issuer')
+            resolve(findItems(text, 'issuer', op)
             ),
           5,
         )

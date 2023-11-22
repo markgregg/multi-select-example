@@ -357,9 +357,9 @@ const CommandBar: React.FC<CommandBarProps> = ({
 
   const dispatch = useAppDispatch()
 
-  const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer', matchers?: Matcher[]): SourceItem[] => {
+  const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer', op: 'and' | 'or' | null, matchers?: Matcher[]): SourceItem[] => {
     const uniqueItems = new Set<string>()
-    const predicate = matchers ? getPredicate(matchers) : null
+    const predicate = matchers && op !== 'or' ? getPredicate(matchers) : null
     bonds.forEach(bond => {
       if (!predicate || predicate(bond)) {
         const value = bond[field];
@@ -397,10 +397,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
       ignoreCase: true,
       searchStartLength: 1,
       selectionLimit: 2,
-      source: async (text, matchers) => new Promise((resolve) => {
+      source: async (text, op, matchers) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'isin', matchers)
+            resolve(findItems(text, 'isin', op, matchers)
             ),
           5,
         )
@@ -414,10 +414,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
       ignoreCase: true,
       searchStartLength: 1,
       selectionLimit: 2,
-      source: async (text) => new Promise((resolve) => {
+      source: async (text, op) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'isin')
+            resolve(findItems(text, 'isin', op)
             ),
           5,
         )
@@ -430,10 +430,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
       precedence: 2,
       ignoreCase: true,
       selectionLimit: 2,
-      source: async (text, matchers) => new Promise((resolve) => {
+      source: async (text, op, matchers) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'currency', matchers)
+            resolve(findItems(text, 'currency', op, matchers)
             ),
           5,
         )
@@ -503,10 +503,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
       ignoreCase: false,
       searchStartLength: 3,
       selectionLimit: 2,
-      source: async (text, matchers) => new Promise((resolve) => {
+      source: async (text, op, matchers) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'issuer', matchers)
+            resolve(findItems(text, 'issuer', op, matchers)
             ),
           5,
         )
@@ -549,10 +549,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
       searchStartLength: 2,
       selectionLimit: 2,
       functional: true,
-      source: async (text) => new Promise((resolve) => {
+      source: async (text, op) => new Promise((resolve) => {
         setTimeout(
           () =>
-            resolve(findItems(text, 'issuer')
+            resolve(findItems(text, 'issuer', op)
             ),
           5,
         )
