@@ -338,7 +338,7 @@ const operation = (matcher: Matcher): Operation => {
 
 const getPredicate = (matchers: Matcher[]): Operation | null => {
   let op: Operation | null = null
-  matchers.filter(matcher => matcher.comparison !== '(' && matcher.comparison !== ')').forEach(matcher => {
+  matchers.filter(matcher => matcher.comparison !== '(' && matcher.comparison !== ')' && !matcher.changing).forEach(matcher => {
     const currentOp = operation(matcher)
     op = (op !== null)
       ? operator(matcher, op, currentOp)
@@ -385,7 +385,11 @@ const CommandBar: React.FC<CommandBarProps> = ({
       name: 'Interest',
       requiredDataSources: ['ISIN2', 'Client'],
       optionalDataSources: ['Side', 'Coupon', 'Size', 'Client', 'MaturityDate', 'CountryRegion']
-    }
+    },
+    {
+      name: 'Open',
+      optionalDataSources: ['Page']
+    },
   ], [])
 
   const dataSource = React.useMemo<DataSource[]>(() => [
@@ -569,6 +573,15 @@ const CommandBar: React.FC<CommandBarProps> = ({
       functional: true,
       source: regionCountry
     },
+    {
+      name: 'Page',
+      title: 'Page',
+      comparisons: stringComparisons,
+      precedence: 5,
+      ignoreCase: true,
+      selectionLimit: 1,
+      source: ['Trade', 'Interest', 'Analysis', 'Tasks']
+    }
   ],
     [findItems]
   )
@@ -592,7 +605,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
     if (func === 'Trade') {
       const tradeMatchers = matchers.filter(matcher => matcher.source.toLowerCase() !== 'actions')
       onTrade(tradeMatchers)
-    } else if (func === 'Interest') {
+    } else if (func === 'Interest' || func === 'Open') {
       alert('Yet to be handled')
     } else {
       const contextMatchers = matchers?.filter(m => m.source !== 'TradeDate' && m.source !== 'Client') ?? []

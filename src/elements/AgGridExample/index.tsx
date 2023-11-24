@@ -200,7 +200,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
     const sources = newMatchers.map(m => m.source).filter(isUnique)
     sources.forEach(source => {
       const column = getColumn(source)
-      const values = newMatchers.filter(m => m.source === source)
+      const values = newMatchers.filter(m => m.source === source && !m.changing)
       const filter = createFilter(values)
       const instance = agGridRef.current?.api?.getFilterInstance(column)
       if (instance) {
@@ -252,6 +252,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
           maxDropDownHeight={120}
           showCategories={showCategories}
           hideToolTip={hideToolTips}
+          operators='AgGrid'
         />
       </div>
       <div

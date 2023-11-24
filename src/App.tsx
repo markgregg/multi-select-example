@@ -85,10 +85,10 @@ const App = () => {
         title='Position Blotter'
         visible={blotterVisible}
         onHide={() => setBlotterVisible(false)}
-        height={460}
+        height={440}
         width={1200}
         x={50}
-        y={220}
+        y={210}
       >
         <AgGridExample showCategories={showCategories} hideToolTips={hideToolTips} />
       </Window>
