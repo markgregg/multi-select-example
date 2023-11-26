@@ -240,7 +240,7 @@ const Bonds: React.FC<BondsProps> = ({
   }, [])
 
   React.useEffect(() => {
-    if (!context.matchers.find(m => m.source === 'Channel' && (m.text === 'Red' || m.text === 'Blue'))) {
+    if (!context.matchers.find(m => m.source === 'Channel' && (m.text === 'Green' || m.text === 'Blue'))) {
       matchersChanged(context.matchers.filter(m => m.source !== 'Channel'))
     }
   }, [context.matchers, matchersChanged])
