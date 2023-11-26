@@ -36,6 +36,7 @@ const Bonds: React.FC<BondsProps> = ({
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
   ])
   const theme = useAppSelector((state) => state.theme.theme)
+  const context = useAppSelector((state) => state.context)
 
   const findItems = React.useCallback((text: string, field: 'isin' | 'currency' | 'issuer', op: 'and' | 'or' | null): SourceItem[] => {
     const uniqueItems = new Set<string>()
@@ -238,6 +239,11 @@ const Bonds: React.FC<BondsProps> = ({
       })
   }, [])
 
+  React.useEffect(() => {
+    if (!context.matchers.find(m => m.source === 'Channel' && (m.text === 'Red' || m.text === 'Blue'))) {
+      matchersChanged(context.matchers.filter(m => m.source !== 'Channel'))
+    }
+  }, [context.matchers, matchersChanged])
 
   const rowSelected = (event: RowSelectedEvent<Bond>) => {
     if (event.data?.isin) {

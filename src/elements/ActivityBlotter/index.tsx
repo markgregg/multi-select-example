@@ -7,18 +7,13 @@ import { fetchBondsAndCache } from '../../services/bondsService'
 import Bond from '../../types/Bond'
 import { ColDef, IRowNode } from 'ag-grid-community'
 import { createFilter, getColumn } from '../../types/AgFilter'
-import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { useAppSelector } from '../../hooks/redux'
 import { extractDate, getSize, isSize, isUnique } from '../../utils'
-import { setContext } from '../../store/contextSlice'
 import './ActivityBlotter.css'
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-alpine.css"
 
-interface ActivityBlotterProps {
-}
-
-const ActivityBlotter: React.FC<ActivityBlotterProps> = ({
-}) => {
+const ActivityBlotter: React.FC = () => {
   const agGridRef = React.useRef<AgGridReact<Bond> | null>(null)
   const [matchers, setMatchers] = React.useState<Matcher[]>()
   const [rowData, setRowData] = React.useState<Bond[]>()
@@ -34,7 +29,6 @@ const ActivityBlotter: React.FC<ActivityBlotterProps> = ({
     { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 350 },
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
   ])
-  const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.theme.theme)
   const context = useAppSelector((state) => state.context)
 
@@ -216,8 +210,10 @@ const ActivityBlotter: React.FC<ActivityBlotterProps> = ({
   }, [columnDefs])
 
   React.useEffect(() => {
-    matchersChanged(context.matchers)
-  }, [context, matchersChanged])
+    if (!context.matchers.find(m => m.source === 'Channel' && (m.text === 'Red' || m.text === 'Blue'))) {
+      matchersChanged(context.matchers.filter(m => m.source !== 'Channel'))
+    }
+  }, [context.matchers, matchersChanged])
 
   React.useEffect(() => {
     fetchBondsAndCache()
@@ -242,7 +238,7 @@ const ActivityBlotter: React.FC<ActivityBlotterProps> = ({
         <MultiSelect
           matchers={matchers}
           dataSources={dataSource}
-          onMatchersChanged={m => dispatch(setContext(m))}
+          onMatchersChanged={matchersChanged}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
           showCategories={false}

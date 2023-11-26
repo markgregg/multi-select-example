@@ -600,6 +600,19 @@ const CommandBar: React.FC<CommandBarProps> = ({
         'Utilities'
       ]
     },
+    {
+      name: 'Channel',
+      title: 'Channel',
+      comparisons: stringComparisons,
+      precedence: 10,
+      ignoreCase: true,
+      searchStartLength: 2,
+      source: [
+        'Red',
+        'Green',
+        'Blue'
+      ]
+    },
   ],
     [findItems]
   )

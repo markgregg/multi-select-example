@@ -204,7 +204,7 @@ const App = () => {
                         }
                       </div>
                       <div className='mainPanel2'>
-                        <Window title='Clients'>
+                        <Window title='Clients' color='blue'>
                           <Clients onClientSelected={selectClient} selectedClient={client} />
                         </Window>
                       </div>
@@ -216,7 +216,7 @@ const App = () => {
                         </Window>
                       </div>
                       <div className='mainPanel2'>
-                        <Window title='Bonds'>
+                        <Window title='Bonds' color='red'>
                           <Bonds onBondSelected={selectBond} />
                         </Window>
                       </div>
@@ -224,7 +224,7 @@ const App = () => {
                 }
               </div>
               <div className='mainActivity'>
-                <Window title='Actiity'>
+                <Window title='Actiity' color='green'>
                   <ActivityBlotter />
                 </Window>
               </div>
