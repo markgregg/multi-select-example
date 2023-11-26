@@ -22,3 +22,7 @@
   font-size: x-large;
   color: green;
 }
+
+.clientInterestFloating:hover {
+  color: rgb(24, 170, 24);
+}

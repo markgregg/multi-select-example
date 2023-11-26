@@ -18,11 +18,12 @@ import Bonds from './elements/Bonds'
 import Bond from './types/Bond'
 import BondProfile from './elements/BondProfile'
 import Interest from './types/Interest'
+import FloatingMenu, { ClientDetail, Perspective } from './elements/FloatingMenu'
 import './App.css'
 
+
 type Focus = 'Daily' | 'Analysis'
-type Perspective = 'Client' | 'Bond'
-type ClientDetail = 'Profile' | 'Interests' | 'Recommendations'
+
 
 const App = () => {
   const [activePerspective, setActivePerspective] = React.useState<Perspective>('Client')
@@ -55,10 +56,7 @@ const App = () => {
     'Daily',
     'Analysis'
   ]
-  const perspectiveTabs: Perspective[] = [
-    'Client',
-    'Bond',
-  ]
+
   const clientTabs: ClientDetail[] = [
     'Profile',
     'Recommendations',
@@ -192,7 +190,6 @@ const App = () => {
           activeFocus === 'Daily'
             ? <div>
               <div className='mainTop'>
-                <Tabs tabs={perspectiveTabs} activeTab={activePerspective} onSelect={setActivePerspective} />
                 {
                   activePerspective === 'Client'
                     ? <div className='mainPanels'>
@@ -236,7 +233,7 @@ const App = () => {
             </div>
         }
       </div>
-
+      <FloatingMenu onSelectOption={setActivePerspective} currentPerspective={activePerspective} />
 
     </div>
   )
