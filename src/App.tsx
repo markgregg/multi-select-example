@@ -2,23 +2,48 @@ import * as React from 'react'
 import Select from './elements/Select'
 import { Theme, bodyStyleFromTheme, themes } from './themes'
 import CommandBar from './elements/CommandBar'
-import { useAppDispatch, useAppSelector } from './hooks/redxux'
+import { useAppDispatch, useAppSelector } from './hooks/redux'
 import { setTheme } from './store/themeSlice'
-import AgGridExample from './elements/AgGridExample'
 import Window from './elements/Window'
-import Button from './elements/Button'
-import { LuGrid } from 'react-icons/lu';
-import './App.css'
-import TradeExample from './elements/TradeExample'
+import { setContext } from './store/contextSlice'
 import { Matcher } from 'multi-source-select'
-import Trade, { defaultTrade } from './types/Trade'
+import Tabs from './elements/Tabs'
+import ActivityBlotter from './elements/ActivityBlotter'
+import Clients from './elements/Clients'
+import ClientRecommendations from './elements/ClientRecommendations'
+import ClientInterests from './elements/ClientInterests'
+import ClientProfile from './elements/ClientProfile'
+import { clientList } from './elements/Clients/clientList'
+import Bonds from './elements/Bonds'
+import Bond from './types/Bond'
+import BondProfile from './elements/BondProfile'
+import Interest from './types/Interest'
+import './App.css'
+
+type Focus = 'Daily' | 'Analysis'
+type Perspective = 'Client' | 'Bond'
+type ClientDetail = 'Profile' | 'Interests' | 'Recommendations'
 
 const App = () => {
+  const [activePerspective, setActivePerspective] = React.useState<Perspective>('Client')
+  const [activeFocus, setActiveFocus] = React.useState<Focus>('Daily')
+  const [activeClient, setActiveClient] = React.useState<ClientDetail>('Profile')
+  const [client, setClient] = React.useState<string>(clientList[10])
+  const [bond, setBond] = React.useState<Bond>({
+    "isin": "FR0013405222",
+    "currency": "USD",
+    "issueDate": "2019-03-04",
+    "maturityDate": "2024-03-04",
+    "price": 108.0291,
+    "size": 699000,
+    "side": "SELL",
+    "coupon": 5.655,
+    "issuer": "BPCE",
+    "hairCut": 21.7
+  })
   const [showCategories, setShowCategories] = React.useState<boolean>(false)
   const [hideToolTips, setHideToolTips] = React.useState<boolean>(false)
-  const [blotterVisible, setBlotterVisible] = React.useState<boolean>(true)
-  const [tradeEntryVisible, setTradeEntryVisible] = React.useState<boolean>(false)
-  const [trade, setTrade] = React.useState<Trade>(defaultTrade)
+  const [interest, setInterest] = React.useState<Interest | null>(null)
   const theme = useAppSelector((state) => state.theme.theme)
   const dispatch = useAppDispatch()
 
@@ -26,23 +51,102 @@ const App = () => {
     dispatch(setTheme(theme))
   }
 
-  const enterTrade = (matchers: Matcher[]) => {
-    const isin = matchers.find(m => m.source === 'ISIN')?.text ?? 'XS2567260927'
-    const tradeDate = matchers.find(m => m.source === 'TradeDate')?.value as Date ?? new Date()
-    const price = matchers.find(m => m.source === 'Price')?.value as number ?? 99.99
-    const size = matchers.find(m => m.source === 'Size')?.value as number ?? 1000000
-    const side = matchers.find(m => m.source === 'Side')?.value as ('BUY' | 'SELL') ?? 'BUY'
-    const client = matchers.find(m => m.source === 'Client')?.text ?? 'Landesbank Saar'
+  const focusTabs: Focus[] = [
+    'Daily',
+    'Analysis'
+  ]
+  const perspectiveTabs: Perspective[] = [
+    'Client',
+    'Bond',
+  ]
+  const clientTabs: ClientDetail[] = [
+    'Profile',
+    'Recommendations',
+    'Interests'
+  ]
 
-    setTrade({
-      isin,
-      tradeDate,
-      price,
-      size,
-      side,
-      client
-    })
-    setTradeEntryVisible(true)
+  const runCommand = (command: string, matchers?: Matcher[]) => {
+    if (command === 'Interest' && matchers) {
+      const client = matchers.find(m => m.source === 'Client')?.text
+      const isin = matchers.find(m => m.source === 'ISIN2')?.text
+      const industry = matchers.find(m => m.source === 'Industry')?.text
+      const maturityFrom = matchers.find(m => m.source === 'MaturityDate' && m.comparison === '>')?.text
+      const maturityTo = matchers.find(m => m.source === 'MaturityDate' && m.comparison === '<')?.text
+      const size = matchers.find(m => m.source === 'Size')?.value as number
+      const side = matchers.find(m => m.source === 'Side')?.value as ('BUY' | 'SELL')
+      const couponFrom = matchers.find(m => m.source === 'Coupon' && m.comparison === '>')?.value as number
+      const couponTo = matchers.find(m => m.source === 'Coupon' && m.comparison === '<')?.value as number
+
+      if (client) {
+        dispatch(setContext([
+          {
+            key: 'SELECT-CLIENT',
+            operator: 'and',
+            comparison: '=',
+            source: 'Issuer',
+            value: client,
+            text: client
+          }
+        ]))
+      }
+      setActivePerspective('Client')
+      setActiveClient('Interests')
+      if (client) {
+        selectClient(client)
+      }
+      setInterest({
+        isin,
+        maturityFrom,
+        maturityTo,
+        size,
+        side,
+        couponFrom,
+        couponTo,
+        industry
+      })
+
+    } else if (command && matchers) {
+      const pers: Perspective = command === 'Bond' ? 'Bond' : 'Client'
+      const panel: ClientDetail | null = command === 'Recommendations'
+        ? 'Recommendations'
+        : command === 'Interests'
+          ? 'Interests'
+          : command === 'Profile'
+            ? 'Profile'
+            : null
+      setActivePerspective(pers)
+      if (panel) {
+        setActiveClient(panel)
+      }
+    }
+  }
+
+  const selectClient = (client: string) => {
+    dispatch(setContext([
+      {
+        key: 'SELECT-CLIENT',
+        operator: 'and',
+        comparison: '=',
+        source: 'Issuer',
+        value: client,
+        text: client
+      }
+    ]))
+    setClient(client)
+  }
+
+  const selectBond = (bond: Bond) => {
+    dispatch(setContext([
+      {
+        key: 'SELECT-BOND',
+        operator: 'and',
+        comparison: '=',
+        source: 'ISIN',
+        value: bond.isin,
+        text: bond.isin
+      }
+    ]))
+    setBond(bond)
   }
 
   return (
@@ -77,32 +181,63 @@ const App = () => {
           </label>
         </div>
       </div>
-      <div className='mainToolBar'>
-        <Button Icon={LuGrid} onClick={() => setBlotterVisible(true)} />
+      <div
+        className='mainContentDiv'
+      >
+        <CommandBar onCommand={runCommand} showCategories={showCategories} hideToolTips={hideToolTips} />
+        <div>
+          <Tabs tabs={focusTabs} activeTab={activeFocus} onSelect={setActiveFocus} />
+        </div>
+        {
+          activeFocus === 'Daily'
+            ? <div>
+              <div className='mainTop'>
+                <Tabs tabs={perspectiveTabs} activeTab={activePerspective} onSelect={setActivePerspective} />
+                {
+                  activePerspective === 'Client'
+                    ? <div className='mainPanels'>
+                      <div className='mainPanel1'>
+                        <Tabs tabs={clientTabs} activeTab={activeClient} onSelect={setActiveClient} />
+                        {
+                          activeClient === 'Profile'
+                            ? <ClientProfile client={client} />
+                            : activeClient === 'Recommendations'
+                              ? <ClientRecommendations />
+                              : <ClientInterests interest={interest} onClearInterests={() => setInterest(null)} />
+                        }
+                      </div>
+                      <div className='mainPanel2'>
+                        <Window title='Clients'>
+                          <Clients onClientSelected={selectClient} selectedClient={client} />
+                        </Window>
+                      </div>
+                    </div>
+                    : <div className='mainPanels'>
+                      <div className='mainPanel1'>
+                        <Window title='Profile' >
+                          <BondProfile bond={bond} />
+                        </Window>
+                      </div>
+                      <div className='mainPanel2'>
+                        <Window title='Bonds'>
+                          <Bonds onBondSelected={selectBond} />
+                        </Window>
+                      </div>
+                    </div>
+                }
+              </div>
+              <div className='mainActivity'>
+                <Window title='Actiity'>
+                  <ActivityBlotter />
+                </Window>
+              </div>
+            </div>
+            : <div>
+            </div>
+        }
       </div>
-      <CommandBar onTrade={enterTrade} showCategories={showCategories} hideToolTips={hideToolTips} />
-      <Window
-        title='Position Blotter'
-        visible={blotterVisible}
-        onHide={() => setBlotterVisible(false)}
-        height={440}
-        width={1200}
-        x={50}
-        y={210}
-      >
-        <AgGridExample showCategories={showCategories} hideToolTips={hideToolTips} />
-      </Window>
-      <Window
-        title='Trade entry'
-        visible={tradeEntryVisible}
-        onHide={() => setTradeEntryVisible(false)}
-        height={300}
-        width={350}
-        x={200}
-        y={300}
-      >
-        <TradeExample trade={trade} onClose={() => setTradeEntryVisible(false)} />
-      </Window>
+
+
     </div>
   )
 }

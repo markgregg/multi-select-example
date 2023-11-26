@@ -1,0 +1,36 @@
+.bondProfileMain {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  background-color: white;
+  font-size: smaller;
+  height: 360px;
+}
+
+.bondProfileProps {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  padding-left: 5px;
+}
+
+.bondProfileLimit {
+  max-width: 380px;
+  height: 15px;
+  overflow: hidden;
+}
+
+.bondProfileBuy {
+  color: blue;
+}
+
+.bondProfileSell {
+  color: red;
+}
+
+.bondProfileCharts {
+  display: flex;
+  flex-direction: column;
+  height: 280px;
+  padding-bottom: 5px;
+}

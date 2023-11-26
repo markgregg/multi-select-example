@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { styleCodeFromTheme, styleFromTheme } from "../../themes"
+import { styleFromTheme } from "../../themes"
 import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons, Nemonic } from 'multi-source-select'
 import MultiSelect from 'multi-source-select'
-import { useAppDispatch, useAppSelector } from '../../hooks/redxux'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
 import { extractDate, getSize, isSize } from '../../utils'
 import { fetchBondsAndCache } from '../../services/bondsService'
 import Bond from '../../types/Bond'
@@ -12,7 +12,7 @@ import './CommandBar.css'
 
 
 interface CommandBarProps {
-  onTrade: (matchers: Matcher[]) => void
+  onCommand: (command: string, matchers?: Matcher[]) => void
   showCategories?: boolean
   hideToolTips?: boolean
 }
@@ -343,12 +343,12 @@ const getPredicate = (matchers: Matcher[]): Operation | null => {
     op = (op !== null)
       ? operator(matcher, op, currentOp)
       : currentOp
-  });
+  })
   return op
 }
 
 const CommandBar: React.FC<CommandBarProps> = ({
-  onTrade,
+  onCommand,
   showCategories,
   hideToolTips
 }) => {
@@ -362,14 +362,14 @@ const CommandBar: React.FC<CommandBarProps> = ({
     const predicate = matchers && op !== 'or' ? getPredicate(matchers) : null
     bonds.forEach(bond => {
       if (!predicate || predicate(bond)) {
-        const value = bond[field];
+        const value = bond[field]
         if (value &&
           value.toUpperCase().includes(text.toUpperCase())) {
-          uniqueItems.add(value);
+          uniqueItems.add(value)
         }
       }
     })
-    let items = [...uniqueItems].sort();
+    let items = [...uniqueItems].sort()
     if (items.length > 10) {
       items = items?.slice(10)
     }
@@ -378,18 +378,25 @@ const CommandBar: React.FC<CommandBarProps> = ({
 
   const functions = React.useMemo<Nemonic[]>(() => [
     {
-      name: 'Trade',
-      optionalDataSources: ['ISIN2', 'Side', 'Price', 'Size', 'Client']
-    },
-    {
       name: 'Interest',
-      requiredDataSources: ['ISIN2', 'Client'],
-      optionalDataSources: ['Side', 'Coupon', 'Size', 'Client', 'MaturityDate', 'CountryRegion']
+      requiredDataSources: ['Client', 'Side'],
+      optionalDataSources: ['Coupon', 'Size', 'MaturityDate', 'CountryRegion', 'Industry', 'ISIN2']
     },
     {
-      name: 'Open',
-      optionalDataSources: ['Page']
+      name: 'Client'
     },
+    {
+      name: 'Bond',
+    },
+    {
+      name: 'Recommendations',
+    },
+    {
+      name: 'Interests',
+    },
+    {
+      name: 'Profile',
+    }
   ], [])
 
   const dataSource = React.useMemo<DataSource[]>(() => [
@@ -484,7 +491,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
       name: 'Side',
       title: 'Side',
       comparisons: stringComparisons,
-      precedence: 4,
+      precedence: 9,
       ignoreCase: true,
       selectionLimit: 1,
       source: ['BUY', 'SELL']
@@ -551,7 +558,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
       precedence: 5,
       ignoreCase: false,
       searchStartLength: 2,
-      selectionLimit: 2,
+      selectionLimit: 1,
       functional: true,
       source: async (text, op) => new Promise((resolve) => {
         setTimeout(
@@ -574,14 +581,25 @@ const CommandBar: React.FC<CommandBarProps> = ({
       source: regionCountry
     },
     {
-      name: 'Page',
-      title: 'Page',
+      name: 'Industry',
+      title: 'Industry',
       comparisons: stringComparisons,
-      precedence: 5,
+      precedence: 8,
       ignoreCase: true,
-      selectionLimit: 1,
-      source: ['Trade', 'Interest', 'Analysis', 'Tasks']
-    }
+      searchStartLength: 2,
+      functional: true,
+      source: [
+        'Energy',
+        'Materials',
+        'Industrials',
+        'Consumer',
+        'Health',
+        'Financials',
+        'Technology',
+        'Communications',
+        'Utilities'
+      ]
+    },
   ],
     [findItems]
   )
@@ -602,11 +620,9 @@ const CommandBar: React.FC<CommandBarProps> = ({
   }, [])
 
   const handleAction = (matchers: Matcher[], func?: string) => {
-    if (func === 'Trade') {
-      const tradeMatchers = matchers.filter(matcher => matcher.source.toLowerCase() !== 'actions')
-      onTrade(tradeMatchers)
-    } else if (func === 'Interest' || func === 'Open') {
-      alert('Yet to be handled')
+    if (func) {
+      const valueMatchers = matchers.filter(matcher => matcher.source.toLowerCase() !== 'actions')
+      onCommand(func, valueMatchers)
     } else {
       const contextMatchers = matchers?.filter(m => m.source !== 'TradeDate' && m.source !== 'Client') ?? []
       if (contextMatchers.length > 0) {
@@ -630,15 +646,6 @@ const CommandBar: React.FC<CommandBarProps> = ({
           />
         </div>
       </div>
-      {
-        theme !== 'none' &&
-        <div className='styleContainer'>
-          <div className='mainStyle'>
-            <pre className='styleCode'>{styleCodeFromTheme(theme)}</pre>
-          </div>
-        </div>
-      }
-
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { MutliSelectStyles } from 'multi-source-select';
+import { MutliSelectStyles } from 'multi-source-select'
 
 export type Theme = 'none' | 'metallic'
 export const themes: Theme[] = [
@@ -8,54 +8,55 @@ export const themes: Theme[] = [
 
 export const metallicTheme: MutliSelectStyles = {
   mutliSelect: {
-    borderBottom: '#00468C 1px solid',
-    borderRight: '#00468C 1px solid',
-    borderTop: 'white 1px solid',
-    borderLeft: 'white 1px solid',
-    background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-    color: 'white'
+    borderBottom: '#0F0F0F 1px solid',
+    borderRight: '#0F0F0F 1px solid',
+    borderTop: 'lightgray 1px solid',
+    borderLeft: 'lightgray 1px solid',
+    background: 'rgb(51, 51, 51)',
+    color: 'lightgray'
   },
   input: {
     backgroundColor: 'transparent',
-    color: 'white'
+    color: 'lightgray'
   },
   optionsList: {
-    borderBottom: '#00468C 1px solid',
-    borderRight: '#00468C 1px solid',
-    borderTop: 'white 1px solid;',
-    borderLeft: 'white 1px solid',
-    background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-    color: 'white'
+    borderBottom: '#0F0F0F 1px solid',
+    borderRight: '#0F0F0F 1px solid',
+    borderTop: 'lightgray 1px solid',
+    borderLeft: 'lightgray 1px solid',
+    background: 'rgb(51, 51, 51)',
+    color: 'lightgray'
   },
   activeOption: {
     background: '	#1560BD',
   },
   optionCategory: {
-    background: '#00468C'
+    background: '#0F0F0F'
   },
   matcherView: {
-    backgroundColor: '#16518d',
+    backgroundColor: '#666666',
     borderRadius: '4px'
   },
   matcherToolTip: {
-    borderBottom: '#00468C 1px solid',
-    borderRight: '#00468C 1px solid',
-    borderTop: 'white 1px solid;',
-    borderLeft: 'white 1px solid',
-    background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
+    borderBottom: '#0F0F0F 1px solid',
+    borderRight: '#0F0F0F 1px solid',
+    borderTop: 'lightgray 1px solid',
+    borderLeft: 'lightgray 1px solid',
+    background: 'rgb(51, 51, 51)',
   },
   errorMessage: {
-    borderBottom: '#00468C 1px solid',
-    borderRight: '#00468C 1px solid',
-    borderTop: 'white 1px solid;',
-    borderLeft: 'white 1px solid',
+    borderBottom: '#0F0F0F 1px solid',
+    borderRight: '#0F0F0F 1px solid',
+    borderTop: 'lightgray 1px solid',
+    borderLeft: 'lightgray 1px solid',
   }
 }
 
 export const bodyStyleFromTheme = (theme: string): React.CSSProperties | undefined => {
   if (theme === 'metallic') {
     return {
-      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+      background: 'rgb(51, 51, 51)',
+      color: 'lightgray'
     }
     return undefined
   }
@@ -68,64 +69,15 @@ export const styleFromTheme = (theme: string): MutliSelectStyles | undefined => 
   return undefined
 }
 
-export const styleCodeFromTheme = (theme: string): string => {
-  if (theme === 'metallic') {
-    return ` mutliSelect: {
-      borderBottom: '#00468C 1px solid',
-      borderRight: '#00468C 1px solid',
-      borderTop: 'white 1px solid;',
-      borderLeft: 'white 1px solid',
-      background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-      color: 'white'
-    },
-    input: {
-      backgroundColor: 'transparent',
-      color: 'white'
-    },
-    optionsList: {
-      borderBottom: '#00468C 1px solid',
-      borderRight: '#00468C 1px solid',
-      borderTop: 'white 1px solid;',
-      borderLeft: 'white 1px solid',
-      background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-      color: 'white'
-    },
-    activeOption: {
-      background: '	#1560BD',
-    },
-    optionCategory: {
-      background: '#00468C'
-    },
-    matcherView: {
-      backgroundColor: '#16518d',
-      borderRadius: '4px'
-    },
-    matcherToolTip: {
-      borderBottom: '#00468C 1px solid',
-      borderRight: '#00468C 1px solid',
-      borderTop: 'white 1px solid;',
-      borderLeft: 'white 1px solid',
-      background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-    },
-    errorMessage: {
-      borderBottom: '#00468C 1px solid',
-      borderRight: '#00468C 1px solid',
-      borderTop: 'white 1px solid;',
-      borderLeft: 'white 1px solid',
-    }`
-  }
-  return ''
-}
-
 export const getAgGridStyle = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      '--ag-foreground-color': 'white',
-      '--ag-background-color': '#416488',
-      '--ag-header-foreground-color': 'white',
-      '--ag-header-background-color': '#16518d',
-      '--ag-odd-row-background-color': '#2e5b87',
-      '--ag-header-column-resize-handle-color': '#042e58'
+      '--ag-foreground-color': 'lightgray',
+      '--ag-background-color': 'rgb(51, 51, 51)',
+      '--ag-header-foreground-color': 'lightgray',
+      '--ag-header-background-color': 'rgb(51, 51, 51)',
+      '--ag-odd-row-background-color': 'rgb(32, 32, 32)',
+      '--ag-header-column-resize-handle-color': '#666666'
     }
   }
   return {}
@@ -134,8 +86,18 @@ export const getAgGridStyle = (theme: string): any => {
 export const styleDivFromTheme = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      background: 'linear-gradient(to left top, #00468C, #C3CDE6)',
-      color: 'white'
+      background: 'rgb(51, 51, 51)',
+      color: 'lightgray'
+    }
+  }
+  return {}
+}
+
+export const selectionClassFromTheme = (theme: string): any => {
+  if (theme === 'metallic') {
+    return {
+      background: 'rgb(51, 51, 51)',
+      color: 'lightgray'
     }
   }
   return {}
@@ -144,8 +106,8 @@ export const styleDivFromTheme = (theme: string): any => {
 export const styleHeaderFromTheme = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      backgroundColor: '#00468C',
-      color: 'white'
+      backgroundColor: 'rgb(32, 32, 32)',
+      color: 'lightgray'
     }
   }
   return {}

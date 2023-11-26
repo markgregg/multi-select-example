@@ -1,0 +1,45 @@
+.clientsMain {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.clientsList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  height: 100%;
+  font-size: smaller;
+}
+
+.clientsActive {
+  padding-left: 10px;
+  background-color: darkgray;
+}
+
+.clientsItemNormal {
+  padding-left: 10px;
+}
+
+.clientsItemNormal:hover {
+  background-color: lightgray;
+}
+
+.clientsItemMetallic {
+  padding-left: 10px;
+}
+
+.clientsItemMetallic:hover {
+  background-color: #666666;
+}
+
+.clientsItemNormalActive {
+  padding-left: 10px;
+  background-color: darkgrey;
+}
+
+.clientsItemMetallicActive {
+  padding-left: 10px;
+  background-color: #525252;
+}

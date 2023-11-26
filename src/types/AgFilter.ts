@@ -36,11 +36,11 @@ type AgFilter = AgSingleFilter | AgDualFilter
 export const getColumn = (source: string): string => {
   switch (source) {
     case 'MaturityDate':
-      return 'maturityDate';
+      return 'maturityDate'
     case 'IssueDate':
-      return 'issueDate';
+      return 'issueDate'
     case 'HairCut':
-      return 'hairCut';
+      return 'hairCut'
     case 'Issuer2':
       return 'issuer'
   }

@@ -1,0 +1,18 @@
+.clientRecommendationsMain {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.agInterestsGrid {
+  height: 100%;
+}
+
+.ag-theme-alpine {
+  --ag-grid-size: 3px;
+  --ag-list-item-height: 20px;
+}
+
+.ag-theme-alpine .ag-header-cell {
+  font-size: x-small;
+}

@@ -2,43 +2,38 @@ import * as React from 'react'
 import { getAgGridStyle, styleFromTheme } from "../../themes"
 import { DataSource, Matcher, SourceItem, defaultComparison, numberComparisons, stringComparisons } from 'multi-source-select'
 import MultiSelect from 'multi-source-select'
-import { AgGridReact } from "ag-grid-react";
-import { fetchBondsAndCache } from '../../services/bondsService';
-import Bond from '../../types/Bond';
-import { ColDef, IRowNode } from 'ag-grid-community';
-import { createFilter, getColumn } from '../../types/AgFilter';
-import { useAppDispatch, useAppSelector } from '../../hooks/redxux';
-import { extractDate, getSize, isSize, isUnique } from '../../utils';
-import { setContext } from '../../store/contextSlice';
-import './AgGridExample.css'
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
+import { AgGridReact } from "ag-grid-react"
+import { fetchBondsAndCache } from '../../services/bondsService'
+import Bond from '../../types/Bond'
+import { ColDef, IRowNode } from 'ag-grid-community'
+import { createFilter, getColumn } from '../../types/AgFilter'
+import { useAppDispatch, useAppSelector } from '../../hooks/redux'
+import { extractDate, getSize, isSize, isUnique } from '../../utils'
+import { setContext } from '../../store/contextSlice'
+import './ActivityBlotter.css'
+import "ag-grid-community/styles/ag-grid.css"
+import "ag-grid-community/styles/ag-theme-alpine.css"
 
-interface AgGridExampleProps {
-  showCategories?: boolean
-  hideToolTips?: boolean
+interface ActivityBlotterProps {
 }
 
-
-const AgGridExample: React.FC<AgGridExampleProps> = ({
-  showCategories,
-  hideToolTips
+const ActivityBlotter: React.FC<ActivityBlotterProps> = ({
 }) => {
   const agGridRef = React.useRef<AgGridReact<Bond> | null>(null)
   const [matchers, setMatchers] = React.useState<Matcher[]>()
-  const [rowData, setRowData] = React.useState<Bond[]>();
+  const [rowData, setRowData] = React.useState<Bond[]>()
   const [columnDefs] = React.useState<ColDef<Bond>[]>([
-    { field: "isin", filter: 'agTextColumnFilter', sortable: true, resizable: true },
-    { field: "currency", filter: 'agTextColumnFilter', sortable: true, resizable: true },
-    { field: "issueDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
-    { field: "maturityDate", filter: 'agDateColumnFilter', sortable: true, resizable: true },
-    { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
-    { field: "price", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
-    { field: "size", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
-    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true },
-    { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true },
-    { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true },
-  ]);
+    { field: "isin", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 110 },
+    { field: "currency", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "issueDate", filter: 'agDateColumnFilter', sortable: true, resizable: true, width: 90 },
+    { field: "maturityDate", filter: 'agDateColumnFilter', sortable: true, resizable: true, width: 90 },
+    { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "price", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "size", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 350 },
+    { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
+  ])
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.theme.theme)
   const context = useAppSelector((state) => state.context)
@@ -47,19 +42,19 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
     const uniqueItems = new Set<string>()
     const callback = (row: IRowNode<Bond>) => {
       if (row.data) {
-        const value = row.data[field];
+        const value = row.data[field]
         if (value &&
           value.toUpperCase().includes(text.toUpperCase())) {
-          uniqueItems.add(value);
+          uniqueItems.add(value)
         }
       }
     }
     if (op === 'or') {
-      agGridRef.current?.api.forEachLeafNode(callback);
+      agGridRef.current?.api.forEachLeafNode(callback)
     } else {
-      agGridRef.current?.api.forEachNodeAfterFilter(callback);
+      agGridRef.current?.api.forEachNodeAfterFilter(callback)
     }
-    let items = [...uniqueItems].sort();
+    let items = [...uniqueItems].sort()
     if (items.length > 10) {
       items = items?.slice(10)
     }
@@ -197,7 +192,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
   )
 
   const matchersChanged = React.useCallback((newMatchers: Matcher[]) => {
-    const sources = newMatchers.map(m => m.source).filter(isUnique)
+    const sources = newMatchers.filter(m => !m.changing).map(m => m.source).filter(isUnique)
     sources.forEach(source => {
       const column = getColumn(source)
       const values = newMatchers.filter(m => m.source === source && !m.changing)
@@ -242,7 +237,7 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
 
 
   return (
-    <div>
+    <div className='mainBlotter'>
       <div className='mainMultiselect'>
         <MultiSelect
           matchers={matchers}
@@ -250,8 +245,8 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
           onMatchersChanged={m => dispatch(setContext(m))}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
-          showCategories={showCategories}
-          hideToolTip={hideToolTips}
+          showCategories={false}
+          hideToolTip={false}
           operators='AgGrid'
         />
       </div>
@@ -270,4 +265,4 @@ const AgGridExample: React.FC<AgGridExampleProps> = ({
   )
 }
 
-export default AgGridExample
+export default ActivityBlotter

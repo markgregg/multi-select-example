@@ -1,6 +1,7 @@
 import * as React from 'react'
 import './Select.css'
 import useExternalClicks from '../../hooks/useExternalClicks/useExternalClicks'
+import { useAppSelector } from '../../hooks/redux'
 
 interface SelectProps<T extends string> {
   options: T[]
@@ -17,6 +18,7 @@ const Select = <T extends string,>(props: SelectProps<T>) => {
   const divRef = React.useRef<HTMLDivElement | null>(null)
   const [selected, setSelected] = React.useState<T>(selection)
   const [optionsVisible, setOptionsVisible] = React.useState<boolean>(false)
+  const theme = useAppSelector((state) => state.theme.theme)
 
   const lostFocus = React.useCallback(() => {
     setOptionsVisible(false)
@@ -37,7 +39,9 @@ const Select = <T extends string,>(props: SelectProps<T>) => {
       onClick={() => setOptionsVisible(true)}
       ref={divRef}
     >
-      {selected}
+      <span style={{
+        color: theme === 'metallic' ? 'lightgray' : 'black'
+      }}>{selected}</span>
       {
         optionsVisible &&
         <div className='selectMainOptionList'>

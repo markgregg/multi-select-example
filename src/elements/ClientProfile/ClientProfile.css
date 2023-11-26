@@ -1,0 +1,30 @@
+.clientProfileMain {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  background-color: white;
+  font-size: smaller;
+  height: 360px;
+}
+
+.clientProfileProps {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  padding-left: 5px;
+}
+
+.clientProfileBuy {
+  color: blue;
+}
+
+.clientProfileSell {
+  color: red;
+}
+
+.clientProfileCharts {
+  display: flex;
+  flex-direction: column;
+  height: 290px;
+  padding-bottom: 5px;
+}

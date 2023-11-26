@@ -1,12 +1,12 @@
 export const isUnique = (value: string, index: number, array: string[]) => {
-  return array.indexOf(value) === index;
+  return array.indexOf(value) === index
 }
 
-export const formatDate = (date: Date): string => date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+export const formatDate = (date: Date): string => date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()
 
 export const extractDate = (text: string) => {
   const dt = new Date()
-  const value = parseInt(text.substring(0, text.length - 1))
+  const value = parseInt(text.substring(text[0] === '-' ? 1 : 0, text.length - 1)) * (text[0] === '-' ? -1 : 1)
   const postFix = text.substring(text.length - 1)
   if (postFix === 'y' || postFix === 'Y') {
     dt.setFullYear(dt.getFullYear() + value)
