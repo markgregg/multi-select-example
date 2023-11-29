@@ -12,7 +12,7 @@ export const metallicTheme: MutliSelectStyles = {
     borderRight: '#0F0F0F 1px solid',
     borderTop: 'lightgray 1px solid',
     borderLeft: 'lightgray 1px solid',
-    background: 'rgb(51, 51, 51)',
+    background: 'rgb(16, 16, 24)',
     color: 'lightgray'
   },
   input: {
@@ -24,7 +24,7 @@ export const metallicTheme: MutliSelectStyles = {
     borderRight: '#0F0F0F 1px solid',
     borderTop: 'lightgray 1px solid',
     borderLeft: 'lightgray 1px solid',
-    background: 'rgb(51, 51, 51)',
+    background: 'rgb(16, 16, 24)',
     color: 'lightgray'
   },
   activeOption: {
@@ -42,7 +42,7 @@ export const metallicTheme: MutliSelectStyles = {
     borderRight: '#0F0F0F 1px solid',
     borderTop: 'lightgray 1px solid',
     borderLeft: 'lightgray 1px solid',
-    background: 'rgb(51, 51, 51)',
+    background: 'rgb(16, 16, 24)',
   },
   errorMessage: {
     borderBottom: '#0F0F0F 1px solid',
@@ -55,7 +55,7 @@ export const metallicTheme: MutliSelectStyles = {
 export const bodyStyleFromTheme = (theme: string): React.CSSProperties | undefined => {
   if (theme === 'metallic') {
     return {
-      background: 'rgb(51, 51, 51)',
+      background: 'rgb(16, 16, 24)',
       color: 'lightgray'
     }
     return undefined
@@ -73,9 +73,9 @@ export const getAgGridStyle = (theme: string): any => {
   if (theme === 'metallic') {
     return {
       '--ag-foreground-color': 'lightgray',
-      '--ag-background-color': 'rgb(51, 51, 51)',
+      '--ag-background-color': 'rgb(16, 16, 24)',
       '--ag-header-foreground-color': 'lightgray',
-      '--ag-header-background-color': 'rgb(51, 51, 51)',
+      '--ag-header-background-color': 'rgb(16, 16, 24)',
       '--ag-odd-row-background-color': 'rgb(32, 32, 32)',
       '--ag-header-column-resize-handle-color': '#666666'
     }
@@ -86,7 +86,7 @@ export const getAgGridStyle = (theme: string): any => {
 export const styleDivFromTheme = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      background: 'rgb(51, 51, 51)',
+      background: 'rgb(16, 16, 24)',
       color: 'lightgray'
     }
   }
@@ -96,7 +96,7 @@ export const styleDivFromTheme = (theme: string): any => {
 export const selectionClassFromTheme = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      background: 'rgb(51, 51, 51)',
+      background: 'rgb(16, 16, 24)',
       color: 'lightgray'
     }
   }
@@ -106,7 +106,7 @@ export const selectionClassFromTheme = (theme: string): any => {
 export const styleHeaderFromTheme = (theme: string): any => {
   if (theme === 'metallic') {
     return {
-      backgroundColor: 'rgb(32, 32, 32)',
+      backgroundColor: 'rgb(16, 16, 24)',
       color: 'lightgray'
     }
   }

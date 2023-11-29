@@ -71,11 +71,79 @@
 }
 
 .mainPanel1 {
-  width: 50%;
+  width: 35%;
   height: 100%;
 }
 
 .mainPanel2 {
-  width: 50%;
+  width: 30%;
   height: 100%;
+}
+
+.mainPanel3 {
+  width: 35%;
+  height: 100%;
+}
+
+.mainPanel1Client {
+  width: 40%;
+  height: 100%;
+}
+
+.mainPanel2Client {
+  width: 40%;
+  height: 100%;
+}
+
+.mainPanel3Client {
+  width: 20%;
+  height: 100%;
+}
+
+.mainAnalysis {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.mainAnalysisProperties {
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column
+}
+
+.mainAnalysisArea {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainAnalysisFilter {}
+
+.mainAnalysisContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.mainAnalysisChart {
+  height: 50%;
+  display: flex;
+  width: 100%;
+}
+
+.mainAnalysisBlotter {
+  display: flex;
+  height: 50%;
+  width: 100%;
+}
+
+.mainPhases {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+  text-align: center;
 }

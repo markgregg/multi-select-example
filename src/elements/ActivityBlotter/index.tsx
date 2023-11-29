@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react"
 import { fetchBondsAndCache } from '../../services/bondsService'
 import Bond from '../../types/Bond'
 import { ColDef, IRowNode } from 'ag-grid-community'
-import { createFilter, getColumn } from '../../types/AgFilter'
+import { buySellStyle, createFilter, getColumn } from '../../types/AgFilter'
 import { useAppSelector } from '../../hooks/redux'
 import { extractDate, getSize, isSize, isUnique } from '../../utils'
 import './ActivityBlotter.css'
@@ -25,7 +25,7 @@ const ActivityBlotter: React.FC = () => {
     { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
     { field: "price", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
     { field: "size", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
-    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80, cellStyle: buySellStyle },
     { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 350 },
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
   ])
@@ -241,7 +241,7 @@ const ActivityBlotter: React.FC = () => {
           onMatchersChanged={matchersChanged}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
-          showCategories={false}
+          showCategories={true}
           hideToolTip={false}
           operators='AgGrid'
         />

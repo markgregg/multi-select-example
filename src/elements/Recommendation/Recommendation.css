@@ -1,0 +1,14 @@
+.recommandationMain {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5;
+  align-items: center;
+  font-size: small;
+  padding-left: 5px;
+}
+
+.recommandationAxe {
+  color: orange;
+  width: 20px;
+  font-size: small;
+}

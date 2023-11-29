@@ -8,6 +8,7 @@ import { extractDate } from '../../utils'
 import Bond from '../../types/Bond'
 import { fetchBondsAndCache } from '../../services/bondsService'
 import './BondChart.css'
+import Select from '../Select'
 
 
 interface BondChartProps {
@@ -196,7 +197,8 @@ const BondChart: React.FC<BondChartProps> = ({ type, bond }) => {
     setBondChartOptions({
       chart: {
         type: 'line',
-        height: 235
+        height: 220,
+        width: 500
       },
       title: {
         text: `${type} by ${breakdown}`,
@@ -244,8 +246,6 @@ const BondChart: React.FC<BondChartProps> = ({ type, bond }) => {
 
   const updateMatchers = (m: Matcher[]) => {
     setMatchers(m)
-    const breakdown = m.find(mt => !mt.changing && mt.source === 'Breakdown')
-    setBreakdown(breakdown?.value === 'Industry' ? 'Industry' : 'Date')
   }
 
   return (
@@ -253,14 +253,21 @@ const BondChart: React.FC<BondChartProps> = ({ type, bond }) => {
       className='bondchartMain'
       style={styleDivFromTheme(theme)}
     >
-      <MultiSelect
-        dataSources={dataSource}
-        styles={styleFromTheme(theme)}
-        showCategories={false}
-        hideToolTip={true}
-        matchers={matchers}
-        onMatchersChanged={updateMatchers}
-      />
+      <div className='chartOptions'>
+        <div style={{ paddingLeft: 5, paddingRight: 5 }}>Breakdown</div>
+        <Select options={['Date', 'Industry', 'Maturity', 'Region']} selection={breakdown} onSelectOption={setBreakdown} />
+        <div style={{ paddingLeft: 10, paddingRight: 5 }}>filter</div>
+        <div style={{ flexGrow: 1 }}>
+          <MultiSelect
+            dataSources={dataSource}
+            styles={styleFromTheme(theme)}
+            showCategories={false}
+            hideToolTip={true}
+            matchers={matchers}
+            onMatchersChanged={updateMatchers}
+          />
+        </div>
+      </div>
       <HighchartsReact
         highcharts={Highcharts}
         options={chartOptions}

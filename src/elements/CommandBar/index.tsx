@@ -13,8 +13,6 @@ import './CommandBar.css'
 
 interface CommandBarProps {
   onCommand: (command: string, matchers?: Matcher[]) => void
-  showCategories?: boolean
-  hideToolTips?: boolean
 }
 
 type Operation = (bond: any) => boolean
@@ -338,7 +336,12 @@ const operation = (matcher: Matcher): Operation => {
 
 const getPredicate = (matchers: Matcher[]): Operation | null => {
   let op: Operation | null = null
-  matchers.filter(matcher => matcher.comparison !== '(' && matcher.comparison !== ')' && !matcher.changing).forEach(matcher => {
+  matchers.filter(matcher =>
+    matcher.comparison !== '(' &&
+    matcher.comparison !== ')' &&
+    !matcher.changing &&
+    matcher.source !== 'Channel'
+  ).forEach(matcher => {
     const currentOp = operation(matcher)
     op = (op !== null)
       ? operator(matcher, op, currentOp)
@@ -349,8 +352,6 @@ const getPredicate = (matchers: Matcher[]): Operation | null => {
 
 const CommandBar: React.FC<CommandBarProps> = ({
   onCommand,
-  showCategories,
-  hideToolTips
 }) => {
   const theme = useAppSelector((state) => state.theme.theme)
   const [bonds, setBonds] = React.useState<Bond[]>([])
@@ -396,6 +397,9 @@ const CommandBar: React.FC<CommandBarProps> = ({
     },
     {
       name: 'Profile',
+    },
+    {
+      name: 'Clear'
     }
   ], [])
 
@@ -654,8 +658,8 @@ const CommandBar: React.FC<CommandBarProps> = ({
             styles={styleFromTheme(theme)}
             onComplete={handleAction}
             onCompleteError={(func, missing) => alert(`${func} is missing ${missing.toString()}`)}
-            showCategories={showCategories}
-            hideToolTip={hideToolTips}
+            showCategories={true}
+            hideToolTip={false}
           />
         </div>
       </div>

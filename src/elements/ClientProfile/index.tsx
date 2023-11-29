@@ -7,16 +7,18 @@ import Chart from '../Chart'
 
 interface ClientProfileProps {
   client: string
+  phase: number
 }
-type ChartType = 'BuySell' | 'Volume'
+type ChartType = 'BuySell' | 'Volume' | 'HitRatio'
 
-const ClientProfile: React.FC<ClientProfileProps> = ({ client }) => {
+const ClientProfile: React.FC<ClientProfileProps> = ({ client, phase }) => {
   const [activeChart, setActiveChart] = React.useState<ChartType>('BuySell')
   const theme = useAppSelector((state) => state.theme.theme)
 
   const focusChart: ChartType[] = [
     'BuySell',
-    'Volume'
+    'Volume',
+    'HitRatio'
   ]
 
   return (
@@ -34,15 +36,18 @@ const ClientProfile: React.FC<ClientProfileProps> = ({ client }) => {
         <div><b>Sold YTD:</b> <span className='clientProfileSell'>10,00,000</span></div>
       </div>
       <div className='clientProfileProps'>
-        <div><b>Last Bid:</b> <span className='clientProfileBuy'>19-10-2023</span></div>
-        <div><b>Last Buy:</b> <span className='clientProfileBuy'>17-10-2023</span></div>
-        <div><b>Last Offer:</b> <span className='clientProfileSell'>16-09-2023</span></div>
-        <div><b>Last Sell:</b> <span className='clientProfileSell'>11-09-2023</span></div>
+        <div><b>Last Bid:</b> 19-10-2023</div>
+        <div><b>Last Buy:</b> 17-10-2023</div>
+        <div><b>Last Offer:</b> 16-09-2023</div>
+        <div><b>Last Sell:</b> 11-09-2023</div>
       </div>
-      <div className='clientProfileCharts'>
-        <Tabs tabs={focusChart} activeTab={activeChart} onSelect={setActiveChart} />
-        <Chart type={activeChart} client={client} />
-      </div>
+      {
+        phase >= 4 &&
+        <div className='clientProfileCharts'>
+          <Tabs tabs={focusChart} activeTab={activeChart} onSelect={setActiveChart} />
+          <Chart type={activeChart} client={client} />
+        </div>
+      }
     </div>
 
   )

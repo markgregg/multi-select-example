@@ -4,7 +4,7 @@ import './FloatingMenu.css'
 
 
 export type Perspective = 'Client' | 'Bond'
-export type ClientDetail = 'Profile' | 'Interests' | 'Recommendations'
+export type ClientDetail = 'Holdings' | 'Interests' | 'Recommendations'
 
 interface FloatingMenuProps {
   currentPerspective: Perspective
@@ -12,8 +12,12 @@ interface FloatingMenuProps {
 }
 
 const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPerspective, onSelectOption }) => {
+  const [dragging, setDragging] = React.useState<boolean>(false)
+
   return (
     <Draggable
+      onStart={() => { setTimeout(() => setDragging(true), 250) }}
+      onStop={() => { setTimeout(() => setDragging(false), 250) }}
       defaultPosition={{ x: 1400, y: -50 }}
     >
       <div
@@ -21,8 +25,8 @@ const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPerspective, onSelec
       >
         {
           currentPerspective === 'Client'
-            ? <div onClick={() => onSelectOption('Bond')}>Bond</div>
-            : <div onClick={() => onSelectOption('Client')}>Client</div>
+            ? <div onClick={() => !dragging && onSelectOption('Bond')}>Axe</div>
+            : <div onClick={() => !dragging && onSelectOption('Client')}>Client</div>
         }
       </div>
     </Draggable>

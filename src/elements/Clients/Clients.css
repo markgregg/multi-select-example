@@ -4,12 +4,16 @@
   height: 100%;
 }
 
+.clientsMain input:focus {
+  outline: none;
+}
+
 .clientsList {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
   overflow-x: hidden;
-  height: 340px;
+  height: 320px;
   font-size: smaller;
 }
 

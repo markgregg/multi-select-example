@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  font-size: smaller;
 }
 
 .agInterestsGrid {
@@ -15,4 +16,11 @@
 
 .ag-theme-alpine .ag-header-cell {
   font-size: x-small;
+}
+
+.clientRecommendationsList {
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
+  overflow-y: scroll;
 }

@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react"
 import { fetchBondsAndCache } from '../../services/bondsService'
 import Bond from '../../types/Bond'
 import { ColDef, IRowNode, RowSelectedEvent } from 'ag-grid-community'
-import { createFilter, getColumn } from '../../types/AgFilter'
+import { buySellStyle, createFilter, getColumn } from '../../types/AgFilter'
 import { useAppSelector } from '../../hooks/redux'
 import { extractDate, getSize, isSize, isUnique } from '../../utils'
 import './Bonds.css'
@@ -31,7 +31,7 @@ const Bonds: React.FC<BondsProps> = ({
     { field: "coupon", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
     { field: "price", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
     { field: "size", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
-    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80 },
+    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80, cellStyle: buySellStyle },
     { field: "issuer", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 350 },
     { field: "hairCut", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
   ])
@@ -241,7 +241,8 @@ const Bonds: React.FC<BondsProps> = ({
 
   React.useEffect(() => {
     if (!context.matchers.find(m => m.source === 'Channel' && (m.text === 'Green' || m.text === 'Blue'))) {
-      matchersChanged(context.matchers.filter(m => m.source !== 'Channel'))
+      const m = context.matchers.filter(m => m.source !== 'Channel')
+      matchersChanged(m)
     }
   }, [context.matchers, matchersChanged])
 
@@ -260,7 +261,7 @@ const Bonds: React.FC<BondsProps> = ({
           onMatchersChanged={matchersChanged}
           styles={styleFromTheme(theme)}
           maxDropDownHeight={120}
-          showCategories={false}
+          showCategories={true}
           hideToolTip={false}
           operators='AgGrid'
         />
@@ -269,7 +270,7 @@ const Bonds: React.FC<BondsProps> = ({
         className="ag-theme-alpine agBondsGrid"
         style={getAgGridStyle(theme)}
       >
-        <AgGridReact<Bond>
+        <AgGridReact
           ref={agGridRef}
           rowData={rowData}
           onRowSelected={rowSelected}

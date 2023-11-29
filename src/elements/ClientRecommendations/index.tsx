@@ -1,36 +1,49 @@
 import * as React from 'react'
 import { useAppSelector } from '../../hooks/redux'
-import { getAgGridStyle, styleDivFromTheme } from '../../themes'
-import { ClientRecommendations, clientRecommendationsList } from './clientRecommendationsList'
-import { AgGridReact } from "ag-grid-react"
-import { ColDef } from 'ag-grid-community'
-import "ag-grid-community/styles/ag-grid.css"
-import "ag-grid-community/styles/ag-theme-alpine.css"
+import { styleDivFromTheme } from '../../themes'
+import { ClientRecommendation, getClientRecommendations } from './clientRecommendationsList'
+import Recommendation from '../Recommendation'
 import './ClientRecommendations.css'
 
-const ClientRecommendations: React.FC = () => {
+
+interface ClientRecommendationsProps {
+  clientBond: string
+  isBond?: boolean
+  onItemSelected: (item: string | null, justActivity: boolean) => void
+}
+
+const ClientRecommendations: React.FC<ClientRecommendationsProps> = ({ clientBond, onItemSelected, isBond }) => {
+  const [selected, setSelected] = React.useState<string | null>(null)
   const theme = useAppSelector((state) => state.theme.theme)
-  const [columnDefs] = React.useState<ColDef<ClientRecommendations>[]>([
-    { field: "isin", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 110 },
-    { field: "side", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 80 },
-    { field: "score", filter: 'agNumberColumnFilter', sortable: true, resizable: true, width: 80 },
-    { field: "reason", filter: 'agTextColumnFilter', sortable: true, resizable: true, width: 200 },
-  ])
+  const [recommendations, setRecommendations] = React.useState<ClientRecommendation[]>([])
+
+  const selectItem = (isin: string | null, singleClick: boolean) => {
+    setSelected(isin)
+    onItemSelected(isin, !singleClick)
+  }
+
+  React.useEffect(() => {
+    setRecommendations(getClientRecommendations(isBond))
+  }, [clientBond, isBond])
 
   return (
     <div
       className='clientRecommendationsMain'
       style={styleDivFromTheme(theme)}
     >
-      <div
-        className="ag-theme-alpine agInterestsGrid"
-        style={getAgGridStyle(theme)}
-      >
-        <AgGridReact
-          rowData={clientRecommendationsList}
-          columnDefs={columnDefs}>
-        </AgGridReact>
+      <div className='clientRecommendationsList'>
+        {
+          recommendations.map(rec =>
+            <Recommendation
+              type={!isBond ? 'Client' : 'Bond'}
+              recommendation={rec} key={rec.isin}
+              onSelected={selectItem}
+              selected={selected}
+            />
+          )
+        }
       </div>
+
     </div>
   )
 }

@@ -8,10 +8,11 @@ import { extractDate } from '../../utils'
 import Bond from '../../types/Bond'
 import { fetchBondsAndCache } from '../../services/bondsService'
 import './Chart.css'
+import Select from '../Select'
 
 
 interface ChartProps {
-  type: 'BuySell' | 'Volume',
+  type: 'BuySell' | 'Volume' | 'HitRatio',
   client: string
 }
 
@@ -167,18 +168,6 @@ const Chart: React.FC<ChartProps> = ({ type, client }) => {
         'Utilities'
       ]
     },
-    {
-      name: 'Breakdown',
-      title: 'Breakdown',
-      comparisons: stringComparisons,
-      precedence: 9,
-      ignoreCase: true,
-      searchStartLength: 2,
-      source: [
-        'Industry',
-        'Month'
-      ]
-    },
   ],
     [findItems]
   )
@@ -187,8 +176,16 @@ const Chart: React.FC<ChartProps> = ({ type, client }) => {
     const buys: number[] = []
     const sells: number[] = []
     for (let i = 0; i < 8; i++) {
-      buys.push(type === 'Volume' ? Math.floor(Math.random() * 145) * 100000 : Math.floor(Math.random() * 55))
-      sells.push(type === 'Volume' ? Math.floor(Math.random() * 145) * 100000 : Math.floor(Math.random() * 55))
+      buys.push(type === 'Volume'
+        ? Math.floor(Math.random() * 145) * 100000
+        : type === 'BuySell'
+          ? Math.floor(Math.random() * 55)
+          : Math.floor(Math.random() * 35) + 20)
+      sells.push(type === 'Volume'
+        ? Math.floor(Math.random() * 145) * 100000
+        : type === 'BuySell'
+          ? Math.floor(Math.random() * 55)
+          : Math.floor(Math.random() * 20))
     }
 
     setChartOptions({
@@ -226,15 +223,15 @@ const Chart: React.FC<ChartProps> = ({ type, client }) => {
       series: [
         {
           type: 'column',
-          name: type === 'BuySell' ? 'Buy' : 'Brought',
+          name: type === 'BuySell' ? 'Buy' : type === 'Volume' ? 'Brought' : 'Quoted',
           data: buys,
-          color: 'blue'
+          color: type === 'HitRatio' ? 'red' : 'blue'
         },
         {
           type: 'column',
-          name: type === 'BuySell' ? 'Sell' : 'Sold',
+          name: type === 'BuySell' ? 'Sell' : type === 'Volume' ? 'Sold' : 'Traded',
           data: sells,
-          color: 'red'
+          color: type === 'HitRatio' ? 'blue' : 'red'
         }
       ]
     })
@@ -242,8 +239,6 @@ const Chart: React.FC<ChartProps> = ({ type, client }) => {
 
   const updateMatchers = (m: Matcher[]) => {
     setMatchers(m)
-    const breakdown = m.find(mt => !mt.changing && mt.source === 'Breakdown')
-    setBreakdown(breakdown?.value === 'Industry' ? 'Industry' : 'Date')
   }
 
   return (
@@ -251,14 +246,21 @@ const Chart: React.FC<ChartProps> = ({ type, client }) => {
       className='chartMain'
       style={styleDivFromTheme(theme)}
     >
-      <MultiSelect
-        dataSources={dataSource}
-        styles={styleFromTheme(theme)}
-        showCategories={false}
-        hideToolTip={true}
-        matchers={matchers}
-        onMatchersChanged={updateMatchers}
-      />
+      <div className='chartOptions'>
+        <div style={{ paddingLeft: 5, paddingRight: 5 }}>Breakdown</div>
+        <Select options={['Date', 'Industry', 'Maturity', 'Region']} selection={breakdown} onSelectOption={setBreakdown} />
+        <div style={{ paddingLeft: 10, paddingRight: 5 }}>filter</div>
+        <div style={{ flexGrow: 1 }}>
+          <MultiSelect
+            dataSources={dataSource}
+            styles={styleFromTheme(theme)}
+            showCategories={false}
+            hideToolTip={true}
+            matchers={matchers}
+            onMatchersChanged={updateMatchers}
+          />
+        </div>
+      </div>
       <HighchartsReact
         highcharts={Highcharts}
         options={chartOptions}

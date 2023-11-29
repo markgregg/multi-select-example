@@ -1,28 +1,33 @@
 import * as React from 'react'
 import { useAppSelector } from '../../hooks/redux'
-import { getAgGridStyle, styleDivFromTheme } from '../../themes'
+import { getAgGridStyle, styleDivFromTheme, styleFromTheme } from '../../themes'
 import { ClientInterest, clientInterestList } from './clientInterests'
 import { AgGridReact } from "ag-grid-react"
-import { ColDef } from 'ag-grid-community'
+import { ColDef, RowDoubleClickedEvent } from 'ag-grid-community'
 import "ag-grid-community/styles/ag-grid.css"
 import "ag-grid-community/styles/ag-theme-alpine.css"
 import EnterInterest from '../EnterInterest'
 import Interest, { defaultInterest } from '../../types/Interest'
 import { IoMdAddCircle } from "react-icons/io";
 import Button from '../Button'
+import MultiSelect, { Matcher } from 'multi-source-select'
 import './ClientInterests.css'
+
 
 
 interface ClientProfileProps {
   interest: Interest | null
   onClearInterests: () => void
+  onSelectInterest: (interest: ClientInterest) => void
 }
 
 const ClientInterests: React.FC<ClientProfileProps> = ({
   interest,
-  onClearInterests
+  onClearInterests,
+  onSelectInterest
 }) => {
   const theme = useAppSelector((state) => state.theme.theme)
+  const [matchers, setMatchers] = React.useState<Matcher[]>()
   const [showInterest, setShowInterest] = React.useState<boolean>(false)
   const [columnDefs] = React.useState<ColDef<ClientInterest>[]>([
     { field: "date", filter: 'agDateColumnFilter', sortable: true, resizable: true, width: 80 },
@@ -41,17 +46,38 @@ const ClientInterests: React.FC<ClientProfileProps> = ({
     onClearInterests()
   }
 
+  const selectInterest = (event: RowDoubleClickedEvent<ClientInterest>) => {
+    if (event.data) {
+      onSelectInterest(event.data)
+    }
+  }
+
   return (
     <div
       className='clientInterestsMain'
       style={styleDivFromTheme(theme)}
     >
+      <div className='mainMultiselect'>
+        <MultiSelect
+          matchers={matchers}
+          dataSources={[]}
+          onMatchersChanged={setMatchers}
+          styles={styleFromTheme(theme)}
+          maxDropDownHeight={120}
+          showCategories={false}
+          hideToolTip={false}
+          operators='AgGrid'
+        />
+      </div>
       <div
         className="ag-theme-alpine agInterestsGrid"
         style={getAgGridStyle(theme)}
       >
         <AgGridReact
           rowData={clientInterestList}
+          onRowDoubleClicked={selectInterest}
+          rowSelection='single'
+          rowMultiSelectWithClick={true}
           columnDefs={columnDefs}>
         </AgGridReact>
       </div>

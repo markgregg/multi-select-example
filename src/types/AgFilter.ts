@@ -1,4 +1,20 @@
 import { Matcher } from 'multi-source-select'
+import Bond from './Bond'
+import { CellClassParams, CellStyle, CellStyleFunc } from 'ag-grid-community'
+import { ClientHolding } from '@/elements/ClientHoldings/ClientHoldings'
+
+export const buySellStyle: CellStyleFunc<Bond, any> = (params: CellClassParams<Bond, any>): CellStyle => {
+  return {
+    backgroundColor: params.value === 'BUY' ? 'blue' : 'red',
+    color: 'white'
+  }
+}
+
+export const currencyValueStyle: CellStyleFunc<ClientHolding, any> = (params: CellClassParams<ClientHolding, any>): CellStyle => {
+  return {
+    color: params.value >= 0 ? 'black' : 'lightred'
+  }
+}
 
 export type AgFilterType = 'date' | 'text' | 'number'
 export type AgOperator = 'AND' | 'OR'
@@ -100,7 +116,7 @@ const getDateNumberComparisonType = (comparison: string):
 }
 
 const getOperator = (operator: string): AgOperator => {
-  return operator === '&'
+  return operator === '&' || operator === 'and'
     ? 'AND'
     : 'OR'
 }

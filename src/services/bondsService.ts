@@ -3,7 +3,7 @@ import Bond from "../types/Bond"
 let bondCache: Bond[] = []
 export const fetchBondsAndCache = (): Promise<Bond[]> => {
   if (bondCache.length > 0) {
-    new Promise<Bond[]>(resolve => resolve(bondCache))
+    return new Promise<Bond[]>(resolve => resolve(bondCache))
   }
 
   return getData<Bond[]>('./bonds.json')

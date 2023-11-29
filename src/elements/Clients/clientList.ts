@@ -28,7 +28,6 @@ export const clientList = [
   "European Investment Bank",
   "Realkredit Danmark A/S",
   "E.ON SE",
-  "European Union",
   "FCC Serv.Medio Ambiente Hld.SA",
   "OP-Asuntoluottopankki Oyj",
   "Ferrovial S.A.",
